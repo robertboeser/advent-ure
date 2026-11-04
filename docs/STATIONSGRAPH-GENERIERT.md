@@ -125,6 +125,7 @@ flowchart TD
     eis_bricht --> muehle_aussen
     muehle_aussen --> muehle_innen
     muehle_aussen -.->|"¬wichtel_beobachtet & ¬muehle_frei"| muehle_fenster
+    muehle_aussen --> eissee_ufer
     muehle_aussen --> muehlweg
     muehle_fenster --> muehle_aussen
     muehle_innen -.->|"(pimpernell_freund / zimtsterne_geschenkt)"| wichtelrat
@@ -148,6 +149,7 @@ flowchart TD
     koehlerhuette --> waldrand
     holzhacken --> koehlerhuette
     eissee_ufer --> webstuhl
+    eissee_ufer --> muehle_aussen
     eissee_ufer --> waldrand
     webstuhl -.->|"¬schneeweber_getroffen"| schneeweber_gespraech
     webstuhl -.->|"¬schneeweber_getroffen & korb_gefunden"| ende_schneeweber

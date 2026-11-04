@@ -204,7 +204,7 @@ flowchart TD
 
     muehlweg --> muehle_aussen & eis_bricht & dorfplatz
     eis_bricht --> muehle_aussen
-    muehle_aussen --> muehle_innen & muehle_fenster & muehlweg
+    muehle_aussen --> muehle_innen & muehle_fenster & muehlweg & eissee_ufer
     muehle_fenster --> muehle_aussen
     muehle_innen --> mahlwerk & muehle_aussen
     muehle_innen -.->|Pimpernell / Zimtsterne| wichtelrat
@@ -219,7 +219,7 @@ flowchart TD
     lichtung_fuchs --> waldrand
     koehlerhuette --> holzhacken & waldrand
     holzhacken --> koehlerhuette
-    eissee_ufer --> webstuhl & waldrand
+    eissee_ufer --> webstuhl & waldrand & muehle_aussen
     webstuhl --> schneeweber_gespraech & eissee_ufer & ende_schneeweber
     schneeweber_gespraech --> webstuhl
 
@@ -462,7 +462,8 @@ Das Mühlrad steckt in einem Panzer aus kunstvoll gewebtem Eis. Hinter den Fenst
 | Wahl | Ziel | Min | Bedingung | Effekte |
 |---|---|---|---|---|
 | Durch die knarrende Tür hinein | `muehle_innen` | 0 | – | – |
-| Durch das Fensterchen spähen | `muehle_fenster` | 0 | – | – |
+| Durch das Fensterchen spähen | `muehle_fenster` | 0 | ¬`wichtel_beobachtet`, ¬`muehle_frei` | – |
+| Den Bach hinauf zum Eissee | `eissee_ufer` | 15 | – | – |
 | Zurück zum Bach | `muehlweg` | 10 | – | – |
 
 #### E4 `muehle_fenster` – Ein Blick hinein · *eisig*
@@ -492,7 +493,7 @@ Großvater Haselbart thront auf einem Mehlsack. Die Wichtel lieben Musik und Sü
 | Um Reparatur der Spieldose bitten | ↺ | 10 | `spieldose_kaputt` | −`spieldose_kaputt`, +`spieldose` |
 | Nach dem Silberglöckchen fragen | ↺ | 0 | ¬`muehle_frei` | Text: „Erst, wenn das Mühlrad frei ist.“ |
 | Das Mühlrad mit deiner Flamme befreien | ↺ | 5 | (`kirchenflamme` ODER `glut`), ¬`muehle_frei` **(sichtbar)** | `muehle_frei`, Güte +1, +`silberglocke` |
-| Um einen Strohstern bitten | ↺ | 0 | `zimtsterne_geschenkt`, ¬`strohstern` | +`strohstern` |
+| Dich für die Gastfreundschaft bedanken | ↺ | 0 | `zimtsterne_geschenkt`, ¬`strohstern` | +`strohstern` (die Wichtel schenken ihn unaufgefordert) |
 | Dich verabschieden | `muehle_innen` | 0 | – | – |
 
 #### E7 `mahlwerk` – Das Mahlwerk · *mild*
@@ -571,6 +572,7 @@ Der See ist ein schwarzer Spiegel. In seiner Mitte steht ein Webstuhl aus Eis un
 |---|---|---|---|---|
 | Omas Korb untersuchen | ↺ | 0 | – | `korb_gefunden`, Text: ein Wollfaden führt übers Eis |
 | Über das Eis zum Webstuhl gehen | `webstuhl` | 5 | – | Wärme −1 (zusätzlich) |
+| Dem Bachlauf hinab zur Mühle | `muehle_aussen` | 10 | – | – |
 | Zurück zum Waldrand | `waldrand` | 10 | – | – |
 
 #### F7 `webstuhl` – Der Webstuhl des Schneewebers · *eisig*
@@ -590,7 +592,7 @@ Er erzählt, dass er jede Flocke gewebt hat und keine je gedankt wurde. Er will 
 
 | Wahl | Ziel | Min | Bedingung | Effekte |
 |---|---|---|---|---|
-| Schweigend nicken | `webstuhl` | 5 | – | `schneeweber_verstanden`, Güte +1 |
+| Schweigend nicken | `webstuhl` | 0 | – | `schneeweber_verstanden`, Güte +1 |
 
 ---
 
@@ -661,18 +663,22 @@ Zugang zum Wichtelrat: `pimpernell_freund` (1 Lebkuchen) **oder** `zimtsterne_ge
 
 ---
 
-## 7. Zeit- und Wärme-Budget (Erstschätzung)
+## 7. Zeit- und Wärme-Budget
 
-**Schnellster Weg zum besten Ende ohne Wald:**
-`bahnhof → waerterhaus` (Tee, Laterne) `→ dorfweg → omas_haus → stube` (Brief, Küche, Ofen, Dachboden: Schal, Spieldose, Pimpernell) `→ dorfplatz → agathe` (Legende, Lebkuchen, Strohstern) `→ muehlweg → muehle_aussen → muehle_innen → wichtelrat` (Spieldose) `→ mahlwerk → geheimgang → kirchenschiff → anselm` (Brief, Erlaubnis, Flamme) `→ dorfplatz → omas_haus → adventskalender` (3 Runen) `→ tuer_24 → kirche_vorplatz → anselm` (Schlüssel) `→ turmtreppe → glockenstube → finale_gespraech → finale_waerme → ende_heilige_nacht`
+Gemessen mit `npm run simulate` über die Routen in `tools/routes.mjs` (Stand M7):
 
-- **Zeit:** ca. 125 Minuten, also Ankunft im Turm gegen 23:05 Uhr.
-- **Puffer:** ca. 55 Minuten. Ein vollständiger Waldausflug (Köhler und Eissee) kostet 70–90 Minuten. **Man schafft nicht alles in einem Durchgang.** Das ist gewollt und erhöht den Wiederspielwert.
-- **Wärme ohne Schal:** Start 7, Wärmequellen auf dem Weg +9, Kälteverlust etwa −12. Das reicht knapp. Mit Schal bleibt es bequem.
+| Route | Inhalt | Ankunft im Turm | Puffer | min. Wärme | Ergebnis |
+|---|---|---|---|---|---|
+| `golden` | Haus komplett, Agathe, Mühle (Spieldose), Geheimgang, Kirchenflamme | 23:15 | 45 min | 7 | Ende 1 |
+| `ohneSchal` | wie `golden`, aber ohne Schal | 23:15 | 45 min | 2 | Ende 1 |
+| `wald` | Köhlerglut, Webstuhl-Gespräch, Bachlauf zur Mühle, Silberglöckchen | 23:50 | 10 min | 5 | Ende 1 |
+| `verschenkt` | Schal an Agathe, alle Lebkuchen weg, Spieldose im Finale | 23:15 | 45 min | 4 | Ende 1 |
+| `verscheucht` | Pimpernell verscheucht, Wichtelrat über Zimtsterne, kein Geheimgang | 23:40 | 20 min | 7 | Ende 1 |
+| `komplett` | alles in einem Durchgang | – | – | – | scheitert um Mitternacht (gewollt) |
 
-Diese Werte werden in Meilenstein M7 (Balancing) mit dem Graph-Validator nachgerechnet, siehe UMSETZUNGSPLAN.md.
-
----
+- **Zeit:** Der Weg ohne Wald lässt 45 Minuten Puffer. Wer zusätzlich den Wald erkunden will, muss auswählen. Der Pfad am Bach zwischen Eissee und Mühle macht eine Waldroute überhaupt erst möglich.
+- **Wärme:** Mit Schal bleibt man bequem warm. Ohne Schal wird es knapp, aber machbar. Ab Wärme 2 erscheint ein deutlicher Hinweis.
+- **Zufallsspiel:** Blindes Herumirren endet meist im Schneeschlaf. Das ist beabsichtigt: Die Kälte soll spürbar sein.
 
 ## 8. Prüfregeln für den Graphen
 
@@ -683,4 +689,7 @@ Der Validator (`tools/validate-graph`) muss sicherstellen:
 3. Jede Station ist vom Start `bahnhof` aus erreichbar.
 4. Jedes Ende ist erreichbar. Die beiden globalen Enden werden über einen Zustandsraum-Test geprüft.
 5. Jeder in einer Bedingung verwendete Gegenstand und jedes Flag wird irgendwo gesetzt bzw. vergeben.
-6. **Softlock-Test:** Eine Zustandsraumsuche (BFS über Station plus abstrahierten Zustand) findet für jeden erreichbaren Zustand vor Mitternacht einen Pfad zu einem Ende. Das ist trivial erfüllt, weil Mitternacht immer zu einem Ende führt. Zusätzlich prüft der Test, ob das **beste Ende** aus allen Zuständen erreichbar bleibt, die vor 22:30 Uhr liegen und Wärme ≥ 4 haben. Dabei werden Gegenstände berücksichtigt, die nicht mehr zu bekommen sind.
+6. **Softlock-Test:** Eine vollständige Zustandsraumsuche hat sich als nicht berechenbar erwiesen. Die Bereiche lassen sich fast unabhängig kombinieren, schon vor 22 Uhr entstehen Millionen Zustände, auch mit Dominanz-Reduktion. Stattdessen gilt:
+   - **Strukturelle Analyse:** Jede Voraussetzung des besten Endes hat eine Quelle, die nicht verbraucht werden kann. Die Spieldose (Gabe im Finale, Glockenrune) ist immer erreichbar, die Zimtsterne öffnen den Wichtelrat und bringen den Strohstern, beide Laternen gehen nie verloren, und die Legende erzählt Agathe jederzeit.
+   - **Probe-Routen:** `verschenkt` und `verscheucht` spielen die riskantesten Entscheidungen durch und müssen das beste Ende erreichen.
+   - **Zufallsdurchläufe** (die Hälfte ab Zwischenständen der Routen) finden keine Sackgassen und keine leeren Texte, und sie erreichen jede Station und jede Wahl.

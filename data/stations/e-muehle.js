@@ -58,10 +58,12 @@ export const stations = [
         if: { flag: 'muehle_frei' },
         text: 'Das Mühlrad dreht sich wieder, langsam und knarrend, und Wasser plätschert über die Schaufeln. In allen Fenstern brennen winzige Lichter, und von drinnen hörst du Gesang.',
       },
+      'Bachaufwärts, zwischen den Tannen, schimmert der Eissee.',
     ],
     choices: [
       { label: 'Durch die knarrende Tür hinein', to: 'muehle_innen' },
       { label: 'Durch das Fensterchen spähen', to: 'muehle_fenster', if: { notFlag: ['wichtel_beobachtet', 'muehle_frei'] } },
+      { label: 'Den Bach hinauf zum Eissee', to: 'eissee_ufer', minutes: 15 },
       { label: 'Zurück zum Bach', to: 'muehlweg', minutes: 10 },
     ],
   },

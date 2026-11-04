@@ -207,6 +207,7 @@ export const stations = [
         if: { flag: 'fuchs_freund' },
         text: 'Der Fuchs bleibt am Waldrand stehen und will keinen Schritt weiter.',
       },
+      'Am Südende des Sees, wo der Bach aus dem Eis tritt, führt ein schmaler Pfad bachabwärts ins Tal, zur alten Mühle.',
     ],
     choices: [
       {
@@ -220,6 +221,7 @@ export const stations = [
         minutes: 5,
         effects: { attr: { waerme: -1 } },
       },
+      { label: 'Dem Bachlauf hinab zur Mühle', to: 'muehle_aussen', minutes: 10 },
       { label: 'Zurück zum Waldrand', to: 'waldrand', minutes: 10 },
     ],
   },

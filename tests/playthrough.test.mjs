@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createEngine } from '../js/engine/engine.js';
 import { gameData } from '../data/index.js';
+import { GOLDEN_PATH_TO_TOWER } from '../tools/routes.mjs';
 
 const engine = createEngine(gameData);
 
@@ -11,7 +12,7 @@ const engine = createEngine(gameData);
  * Spielt eine Folge von Wahlen (per Label). „essen:lebkuchen“ benutzt einen Gegenstand.
  * Bei mehreren Wahlen mit gleichem Label wird die erste verfügbare genommen.
  */
-export function play(steps, state = engine.newGame()) {
+function play(steps, state = engine.newGame()) {
   const events = [];
   for (const step of steps) {
     if (step.startsWith('essen:')) {
@@ -32,32 +33,6 @@ export function play(steps, state = engine.newGame()) {
   }
   return { state, events };
 }
-
-/** Schnellster Weg zum besten Ende, ohne Wald (siehe STATIONSGRAPH.md §7). */
-export const GOLDEN_PATH_TO_TOWER = [
-  'An die Tür des Wärterhäuschens klopfen',
-  'Einen Becher Tee annehmen', 'Um die Sturmlaterne bitten', 'Hinaus und hinunter ins Dorf',
-  'Zu Omas Haus am Dorfrand', 'Eintreten',
-  'Den Brief lesen', 'Den Brief einstecken',
-  'In die Küche', 'Die Streichhölzer vom Sims nehmen', 'Die blaue Dose öffnen', 'Die Zimtsterne einpacken', 'Zurück in die Stube',
-  'Den Kachelofen anheizen',
-  'Die Stiege zum Dachboden hinauf', 'Die alte Truhe öffnen', 'Den Wollschal umlegen', 'Die Spieldose mitnehmen', 'Die Truhe schließen',
-  'Dem Rascheln nachgehen', 'Ihm einen Lebkuchen schenken', 'Hinunter in die Stube',
-  'In die Küche', 'Milch auf dem Herd wärmen und trinken', 'Zurück in die Stube', 'Hinaus vor das Haus',
-  'Zum Dorfplatz', 'Zur Maronenfrau gehen',
-  'Nach dem Schneeweber fragen', 'Ihren Maronenofen anzünden', 'Ihr einen Lebkuchen schenken', 'Zurück auf den Platz',
-  'Den Bachweg zur alten Mühle', 'Dem Weg zur Mühle folgen', 'Durch die knarrende Tür hinein',
-  'Zum Wichtelrat gehen', 'Um Reparatur der Spieldose bitten', 'Dich verabschieden',
-  'Das Mahlwerk untersuchen', 'Pimpernell durch die Falltür folgen', 'Durch die Klappe hinter dem Altar steigen',
-  'Den Küster ansprechen', 'Ihm Omas Brief zeigen', 'Zurück ins Kirchenschiff',
-  'Eine Flamme vom Ewigen Licht nehmen', 'Hinaus auf den Vorplatz', 'Zurück zum Dorfplatz',
-  'Zu Omas Haus', 'Eintreten', 'Den Adventskalender betrachten',
-  'Die Flammenrune mit der Flamme des Ewigen Lichts tauen', 'Die Spieldose am Siegel spielen',
-  'Den Strohstern auf die Herzrune legen', 'Die vierundzwanzigste Tür öffnen',
-  'Den Funken in die Laterne setzen und zur Kirche eilen',
-  'Die Kirche betreten', 'Den Küster ansprechen', 'Ihm den Lichtfunken zeigen', 'Zurück ins Kirchenschiff',
-  'Hinaus auf den Vorplatz', 'Die Turmtür aufschließen', 'Mit dem Lichtfunken hinaufsteigen',
-];
 
 test('Ende 1 – Die Heilige Nacht (Golden Path)', () => {
   const { state, events } = play([

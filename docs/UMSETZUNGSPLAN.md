@@ -308,13 +308,11 @@ Er setzt die Prüfregeln aus STATIONSGRAPH.md §8 um:
 
 ### 8.2 Simulator (`tools/simulate.mjs`)
 
-- Eine Breitensuche über den echten Engine-Code. Der Zustand wird dabei abstrahiert: Station, Gegenstände, Flags, Zeit in 5-Minuten-Schritten, Wärme, Güte.
-- Ergebnisse:
-  - kürzester Weg (Zeit) zu jedem Ende,
-  - minimale und maximale Restwärme auf diesen Wegen,
-  - ob das beste Ende aus „frühen“ Zuständen noch erreichbar ist (Softlock-Erkennung),
-  - eine Liste der Stationen und Aktionen, die in keinem gültigen Lauf vor Mitternacht erreichbar sind.
-- Damit werden die Startwerte in `config.js` (Wärme, Minuten, Kälteverlust) begründet eingestellt.
+Ursprünglich war eine Breitensuche über den vollständigen Zustandsraum geplant. Sie ist nicht berechenbar: Selbst mit Pareto-Reduktion (früher, wärmer und gütiger dominiert) und automatischem Aufsammeln entstehen vor 22 Uhr über zwei Millionen Zustände. Der Simulator arbeitet deshalb so:
+
+- **Routen** (`tools/routes.mjs`): Benannte Wahlfolgen mit Zielwerten wie erwartetem Ende, Mindestpuffer bis Mitternacht und Mindestwärme. `npm run simulate -- --trace wald` zeigt eine Route Schritt für Schritt mit Uhrzeit und Wärme.
+- **Zufallsdurchläufe:** Standardmäßig 20 000, die Hälfte davon ab Zwischenständen der Routen. Sie liefern die Verteilung der Enden, decken Sackgassen und leere Texte auf und listen Stationen und Wahlen, die nie erreicht werden.
+- Exit-Code 1, wenn eine Route ihre Ziele verfehlt oder eine Sackgasse bzw. ein leerer Text gefunden wird.
 
 ### 8.3 Tests (`node --test`)
 
@@ -322,7 +320,8 @@ Er setzt die Prüfregeln aus STATIONSGRAPH.md §8 um:
 - **Effekte:** Clamping, Mengen, Aktionen als `used`.
 - **Engine:** Kälteregel mit und ohne Schal oder Lichtfunke, Mitternacht, Schneeschlaf, Reihenfolge der Regeln (ein Ende hat Vorrang), Glockenschlag-Ereignisse.
 - **Storage:** Speichern und Laden, defekte Daten, Versionsmigration, nicht verfügbarer Speicher (gemockt).
-- **Golden Path:** ein festgelegter Wahlpfad aus STATIONSGRAPH.md §7 muss in `ende_heilige_nacht` enden.
+- **Durchgänge:** feste Wahlpfade zu allen sieben Enden (`tests/playthrough.test.mjs`).
+- **Balancing:** Alle Routen erfüllen ihre Zielwerte, und die Zufallsdurchläufe finden keine Sackgassen (`tests/balancing.test.mjs`).
 
 ### 8.4 Manuelle Playtests
 

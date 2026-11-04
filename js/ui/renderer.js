@@ -229,6 +229,13 @@ export function createRenderer({
     renderPockets(state);
 
     const notes = describeEvents(events, { items: engine.items, isAction: kind === 'action' });
+    if (!station.ending && state.attrs.waerme <= 2) {
+      notes.push({
+        kind: 'cold',
+        place: kind === 'action' ? 'bottom' : 'top',
+        text: 'Deine Finger sind taub vor Kälte. Du musst dich bald aufwärmen – oder etwas essen.',
+      });
+    }
 
     if (kind === 'action') {
       // Text ohne Animation aktualisieren (z. B. verschwindet eine genommene Laterne).
