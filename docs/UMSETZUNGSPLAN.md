@@ -36,10 +36,13 @@ Plan für die technische Umsetzung von *Advent-ure: Die vierundzwanzigste Tür* 
 ```
 advent-ure/
 ├── index.html                # Einstiegsseite, Grundgerüst der UI
+├── manifest.webmanifest      # Web-App-Manifest
+├── sw.js                     # Service Worker (offline spielbar)
 ├── css/
 │   ├── base.css              # Reset, Typografie, Layout
 │   ├── theme.css             # Farb-Tokens, Klima-Stimmungen (warm/mild/kalt/eisig)
-│   └── effects.css           # Frostrand, Glühen, Übergänge
+│   ├── effects.css           # Frostrand, Glühen, Übergänge
+│   └── menus.css             # Menüseiten, Erinnerungskalender, Optionen
 ├── js/
 │   ├── main.js               # Bootstrapping, Menü, Event-Verdrahtung
 │   ├── engine/
@@ -51,8 +54,8 @@ advent-ure/
 │   ├── ui/
 │   │   ├── renderer.js       # Station, Wahlen, Uhr, Wärme, Inventar rendern
 │   │   ├── typewriter.js     # Textanimation (überspringbar)
-│   │   ├── menu.js           # Hauptmenü, Erinnerungskalender, Optionen
-│   │   └── a11y.js           # Fokus-Management, Tastatursteuerung
+│   │   ├── menu.js           # Erinnerungskalender, Optionen
+│   │   └── format.js         # Textformatierung, Ereignis-Hinweise
 │   └── fx/
 │       ├── snow.js           # Schneefall-Canvas
 │       ├── audio.js          # Prozeduraler Klang (optional)
@@ -74,15 +77,20 @@ advent-ure/
 ├── tools/
 │   ├── validate-graph.mjs    # Prüfregeln aus STATIONSGRAPH.md §8
 │   ├── export-mermaid.mjs    # Erzeugt das Mermaid-Diagramm aus den Daten
-│   └── simulate.mjs          # Zustandsraumsuche für Balancing (Zeit/Wärme)
+│   ├── simulate.mjs          # Balancing: Routen und Zufallsdurchläufe
+│   └── routes.mjs            # Benannte Spielrouten mit Zielwerten
 ├── tests/
 │   ├── conditions.test.mjs
 │   ├── effects.test.mjs
 │   ├── engine.test.mjs
-│   └── storage.test.mjs
+│   ├── storage.test.mjs
+│   ├── validator.test.mjs
+│   ├── playthrough.test.mjs  # Durchgänge zu allen sieben Enden
+│   ├── balancing.test.mjs    # Routen-Zielwerte, keine Sackgassen
+│   └── release.test.mjs      # Service-Worker-Liste, Versionen, keine externen Requests
 ├── assets/
-│   ├── fonts/
-│   └── img/                  # optional: Vignetten, Favicon
+│   ├── fonts/                # EB Garamond, Cormorant SC (OFL)
+│   └── img/                  # Favicon, Eisblumen-Muster
 └── docs/
     ├── STORY.md
     ├── STATIONSGRAPH.md
@@ -187,7 +195,8 @@ Der Zustand ist **serialisierbar und unveränderlich**. Jede Wahl erzeugt einen 
 |---|---|---|---|
 | `adventure:save:v1` | localStorage | aktueller Spielstand (Autosave nach jeder Wahl) | bis zum Neustart oder Löschen |
 | `adventure:memories:v1` | localStorage | IDs der freigeschalteten Erinnerungen und gesehenen Enden | dauerhaft, über alle Durchgänge |
-| `adventure:settings:v1` | localStorage | Sound an/aus, Textgeschwindigkeit, reduzierte Effekte | dauerhaft |
+| `adventure:settings:v1` | localStorage | Sound an/aus, Lautstärke, Textgeschwindigkeit, reduzierte Effekte, „nur diese Sitzung“ | dauerhaft |
+| `advent-ure-<version>` | Cache Storage (Service Worker) | alle Laufzeitdateien für den Offline-Betrieb | bis zur nächsten Version |
 
 **Begründung für Local Storage statt Session Storage:** Ein Textadventure wird oft unterbrochen. Mit Local Storage kann man den Tab schließen und später „Fortsetzen“ wählen. Für den Erinnerungskalender ist es ohnehin nötig. Session Storage bringt hier keinen Vorteil. Optional kann in den Einstellungen „Spielstand nur für diese Sitzung“ angeboten werden. Dann schreibt `storage.js` den Spielstand in den Session Storage.
 
@@ -367,11 +376,13 @@ Empfohlene Reihenfolge: M0 → M1 → M2 → M3 → M4 → M5 → M6 → M7 → 
 
 ## 11. Definition of Done (Release 1.0)
 
-- [ ] Alle 38 Spielstationen und 7 Enden sind mit finalen Texten umgesetzt.
-- [ ] Validator und Simulator laufen ohne Fehler, alle Tests sind grün.
-- [ ] Der Golden Path zum besten Ende ist automatisiert getestet.
-- [ ] Alle 24 Erinnerungen sind freischaltbar und bleiben über Reloads erhalten.
-- [ ] Autosave und Fortsetzen funktionieren, und „Alles zurücksetzen“ löscht wirklich alles.
-- [ ] Das Spiel ist mit Tastatur und Screenreader spielbar, und `prefers-reduced-motion` wird respektiert.
-- [ ] Es läuft offline nach dem ersten Laden, ohne externe Requests (Schriften lokal).
-- [ ] Es ist auf GitHub Pages veröffentlicht, und das README enthält Link und Startanleitung.
+- [x] Alle 38 Spielstationen und 7 Enden sind mit finalen Texten umgesetzt.
+- [x] Validator und Simulator laufen ohne Fehler, alle Tests sind grün.
+- [x] Der Golden Path zum besten Ende ist automatisiert getestet.
+- [x] Alle 24 Erinnerungen sind freischaltbar und bleiben über Reloads erhalten.
+- [x] Autosave und Fortsetzen funktionieren, und „Alles zurücksetzen“ löscht wirklich alles.
+- [x] Das Spiel ist mit Tastatur bedienbar, Screenreader-Unterstützung ist eingebaut (aria-live, Textkopie während des Typewriters, Fokusführung), und `prefers-reduced-motion` wird respektiert. Ein Test mit echtem Screenreader (VoiceOver) steht noch aus.
+- [x] Es läuft offline nach dem ersten Laden (Service Worker), ohne externe Requests (Schriften lokal).
+- [ ] Veröffentlichung auf GitHub Pages: Der Workflow ist vorbereitet. Push und das Aktivieren von Pages im Repository stehen noch aus.
+
+**Lighthouse** (Titelbildschirm, lokaler Server ohne Kompression, mobile Drosselung): Performance 93, Accessibility 100, Best Practices 100, SEO 100.

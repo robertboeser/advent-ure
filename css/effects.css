@@ -19,12 +19,17 @@
   z-index: 4;
   pointer-events: none;
   opacity: var(--frost);
-  background:
-    url("../assets/img/frost.svg") center / 100% 100% no-repeat,
-    radial-gradient(120% 95% at 50% 50%, transparent 58%, rgba(190, 225, 255, 0.16) 78%, rgba(225, 242, 255, 0.42) 100%);
+  background: radial-gradient(120% 95% at 50% 50%, transparent 58%, rgba(190, 225, 255, 0.16) 78%, rgba(225, 242, 255, 0.42) 100%);
   -webkit-mask-image: radial-gradient(115% 90% at 50% 50%, transparent 52%, #000 92%);
   mask-image: radial-gradient(115% 90% at 50% 50%, transparent 52%, #000 92%);
   transition: opacity 1.5s ease;
+}
+
+/* Das Eisblumen-Muster wird erst im Spiel geladen. */
+body[data-screen="game"] .frost {
+  background:
+    url("../assets/img/frost.svg") center / 100% 100% no-repeat,
+    radial-gradient(120% 95% at 50% 50%, transparent 58%, rgba(190, 225, 255, 0.16) 78%, rgba(225, 242, 255, 0.42) 100%);
 }
 
 body[data-screen="title"] .frost {
@@ -114,7 +119,13 @@ body[data-ending]:not([data-ending=""]) .story.is-leaving {
   transition: opacity 0.6s ease 1.2s;
 }
 
-/* Ruhiger Lesegrund hinter der Textspalte, damit Flocken nicht stören */
+/* Ruhiger Lesegrund hinter der Textspalte, damit Flocken nicht stören.
+   Er ragt seitlich über die Spalte hinaus – der Spielbildschirm schneidet ihn ab,
+   damit auf schmalen Geräten keine horizontale Scrollbreite entsteht. */
+.screen-game {
+  overflow-x: clip;
+}
+
 .story {
   position: relative;
   isolation: isolate;

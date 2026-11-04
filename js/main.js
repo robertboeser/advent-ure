@@ -317,5 +317,11 @@ document.addEventListener('keydown', (event) => {
 
 motionQuery.addEventListener?.('change', () => snow.refresh());
 
+// Offline-Fähigkeit. Lokal (localhost) nur mit ?sw, damit Änderungen beim Entwickeln sofort sichtbar sind.
+const isLocal = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+if ('serviceWorker' in navigator && location.protocol !== 'file:' && (!isLocal || new URLSearchParams(location.search).has('sw'))) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
 applySettings();
 showTitle();
