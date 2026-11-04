@@ -1,0 +1,28 @@
+// Die 24 Erinnerungen des Meta-Adventskalenders (bleiben über Durchgänge erhalten).
+
+export const memories = [
+  { id: 'tee', door: 1, icon: '🍵', title: 'Gustavs Tee', text: 'Thymian und Honig im Wärterhäuschen.' },
+  { id: 'laterne', door: 2, icon: '🏮', title: 'Licht in der Hand', text: 'Eine Laterne für die lange Nacht.' },
+  { id: 'ofen', door: 3, icon: '🧱', title: 'Ofenwärme', text: 'Omas Kachelofen knistert wieder.' },
+  { id: 'brief', door: 4, icon: '✉️', title: 'Omas Worte', text: '„Sei freundlich zu allen, denen Du begegnest.“' },
+  { id: 'pimpernell', door: 5, icon: '🧝', title: 'Pimpernell', text: 'Ein Lebkuchen für einen hungrigen Wichtel.' },
+  { id: 'fuchs', door: 6, icon: '🦊', title: 'Rotes Fell', text: 'Ein Fuchs, befreit aus der Schlinge.' },
+  { id: 'agathe_stern', door: 7, icon: '🌾', title: 'Agathes Stern', text: 'Eine Gabe, die ohne Grund gegeben wurde.' },
+  { id: 'wichtelrat', door: 8, icon: '🍄', title: 'Der Wichtelrat', text: 'Audienz bei Großvater Haselbart.' },
+  { id: 'spieldose', door: 9, icon: '🎶', title: 'Musik im Staub', text: 'Omas Wiegenlied klingt wieder.' },
+  { id: 'silberklang', door: 10, icon: '🔔', title: 'Silberklang', text: 'Das Glöckchen aus der Krippe.' },
+  { id: 'glut', door: 11, icon: '🔥', title: 'Glut des Köhlers', text: 'Vierzig Jahre Feuer in einer Laterne.' },
+  { id: 'ewiges_licht', door: 12, icon: '🕯️', title: 'Das Ewige Licht', text: 'Eine Flamme, weitergegeben mit Anselms Segen.' },
+  { id: 'kalte_fuesse', door: 13, icon: '🧊', title: 'Kalte Füße', text: 'Das Eis auf dem Bach war dünner als gedacht.' },
+  { id: 'geheimgang', door: 14, icon: '🕳️', title: 'Unter der Mühle', text: 'Der alte Mehlweg der Mönche.' },
+  { id: 'holz', door: 15, icon: '🪓', title: 'Holz für den Winter', text: 'Ruprecht brummt zufrieden.' },
+  { id: 'webstuhl', door: 16, icon: '🕸️', title: 'Am Webstuhl', text: 'Begegnung mit dem Schneeweber auf dem Eissee.' },
+  { id: 'tuer_24', door: 17, icon: '✨', title: 'Die vierundzwanzigste Tür', text: 'Der Lichtfunke ist frei.' },
+  { id: 'ende_heimweg', door: 18, icon: '🚂', title: 'Heimweg', text: 'Manche Geschichten beginnen nur, wenn man bleibt.', ending: 6 },
+  { id: 'ende_schneeschlaf', door: 19, icon: '💤', title: 'Schneeschlaf', text: 'Der Schnee war so weich.', ending: 5 },
+  { id: 'ende_zu_spaet', door: 20, icon: '🕛', title: 'Zu spät', text: '„Nächstes Jahr“, sagt Oma.', ending: 4 },
+  { id: 'ende_ewiger_winter', door: 21, icon: '❄️', title: 'Der ewige Winter', text: 'Der Morgen kam nicht.', ending: 3 },
+  { id: 'ende_schneeweber', door: 22, icon: '🧵', title: 'Der neue Weber', text: 'Jede Flocke ein Gruß nach Tannbrück.', ending: 7 },
+  { id: 'ende_laterne', door: 23, icon: '🏮', title: 'Die Laterne brennt', text: 'In diesem Winter fiel kein Schnee mehr.', ending: 2 },
+  { id: 'ende_heilige_nacht', door: 24, icon: '🌟', title: 'Die Heilige Nacht', text: 'Alle drei zusammen.', ending: 1 },
+];

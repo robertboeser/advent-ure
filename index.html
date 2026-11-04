@@ -9,11 +9,81 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/base.css">
 </head>
-<body>
-  <main class="placeholder">
-    <h1>Die vierundzwanzigste Tür</h1>
-    <p>Ein weihnachtliches Textadventure – in Arbeit.</p>
-  </main>
+<body data-screen="title">
+  <noscript>
+    <p class="noscript">Dieses Textadventure braucht JavaScript. Bitte aktiviere es in deinem Browser.</p>
+  </noscript>
+
+  <!-- Titelbildschirm -->
+  <section id="screen-title" class="screen screen-title" aria-labelledby="title-heading">
+    <div class="title-inner">
+      <p class="title-kicker">Ein weihnachtliches Textadventure</p>
+      <h1 id="title-heading" class="title-heading">Die vierundzwanzigste Tür</h1>
+      <p class="title-tagline">Am Heiligabend ist Oma verschwunden, und die Sternlaterne über Tannbrück ist dunkel. Bis Mitternacht bleiben drei Stunden.</p>
+      <nav class="title-menu" aria-label="Hauptmenü">
+        <button type="button" class="btn btn-primary" data-action="continue" hidden>Fortsetzen</button>
+        <button type="button" class="btn" data-action="new">Neues Spiel</button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Spielbildschirm -->
+  <section id="screen-game" class="screen screen-game" hidden>
+    <header class="statusbar">
+      <div class="status-clock" title="Uhrzeit">
+        <span class="status-icon" aria-hidden="true">🕯</span>
+        <span class="sr-only">Uhrzeit:</span>
+        <time id="clock">21:00</time>
+      </div>
+      <div class="status-warmth" id="warmth" role="img" aria-label="Wärme">
+        <span class="warmth-pips" id="warmth-pips" aria-hidden="true"></span>
+        <span class="warmth-label" id="warmth-label" aria-hidden="true"></span>
+      </div>
+      <button type="button" class="icon-btn" id="btn-menu" aria-label="Menü öffnen (M)" title="Menü (M)">☰</button>
+    </header>
+
+    <main class="story" id="story">
+      <h2 id="station-title" class="station-title" tabindex="-1"></h2>
+      <div id="notes-top" class="notes notes-top" aria-live="polite"></div>
+      <div id="station-text" class="station-text"></div>
+      <div id="notes-bottom" class="notes notes-bottom" aria-live="polite" tabindex="-1"></div>
+      <ol id="choices" class="choices" aria-label="Was tust du?"></ol>
+    </main>
+
+    <footer class="pockets">
+      <button type="button" class="pockets-toggle" id="btn-inventory" aria-haspopup="dialog" title="Manteltaschen (I)">
+        Manteltaschen
+      </button>
+      <ul class="pockets-list" id="pockets-list" aria-label="Inhalt der Manteltaschen"></ul>
+    </footer>
+  </section>
+
+  <!-- Inventar -->
+  <dialog id="inventory-dialog" class="dialog" aria-labelledby="inventory-heading">
+    <form method="dialog" class="dialog-inner">
+      <h2 id="inventory-heading">Manteltaschen</h2>
+      <ul id="inventory-list" class="inventory-list"></ul>
+      <p id="inventory-empty" class="muted" hidden>Deine Taschen sind leer – bis auf ein paar Krümel.</p>
+      <div class="dialog-actions">
+        <button type="submit" class="btn" value="close">Schließen</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Spielmenü -->
+  <dialog id="menu-dialog" class="dialog" aria-labelledby="menu-heading">
+    <form method="dialog" class="dialog-inner">
+      <h2 id="menu-heading">Pause</h2>
+      <div class="menu-list">
+        <button type="submit" class="btn btn-primary" value="resume">Weiterspielen</button>
+        <button type="submit" class="btn" value="title">Zum Titelbildschirm</button>
+        <button type="submit" class="btn" value="restart">Neu beginnen</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
