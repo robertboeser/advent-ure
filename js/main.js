@@ -6,6 +6,7 @@ import { createRenderer } from './ui/renderer.js';
 import { createTypewriter } from './ui/typewriter.js';
 import { createCalendar, createOptions } from './ui/menu.js';
 import { createSnow } from './fx/snow.js';
+import { createAudio } from './fx/audio.js';
 import { atmosphereFor, TITLE_ATMOSPHERE } from './fx/atmosphere.js';
 import { gameData, memories } from '../data/index.js';
 
@@ -33,6 +34,7 @@ const flash = $('flash');
 
 // ------------------------------------------------------------------ Bausteine
 const snow = createSnow($('snow'), { reducedMotion });
+const audio = createAudio({ getSettings: () => settings });
 
 const typewriter = createTypewriter({
   getSpeed: () => settings.textSpeed,
@@ -46,7 +48,10 @@ const renderer = createRenderer({
   onUseItem: useItem,
   onRestart: () => startNewGame(),
   onMemories: () => openPage('memories'),
-  onStation: (station) => snow.setMode(atmosphereFor(station)),
+  onStation: (station) => {
+    snow.setMode(atmosphereFor(station));
+    audio.setAmbience(station);
+  },
   presentText: typewriter.present,
   reducedMotion,
 });
@@ -55,7 +60,15 @@ const calendar = createCalendar({ memories, loadUnlocked: storage.loadMemories }
 
 const options = createOptions({
   getSettings: () => settings,
-  onChange: (patch) => updateSettings(patch),
+  onChange: (patch, { preview } = {}) => {
+    if (preview) {
+      settings = { ...settings, ...patch };
+      audio.update();
+      return;
+    }
+    updateSettings(patch);
+    if ('sound' in patch && patch.sound) audio.play('glocke');
+  },
   onReset: resetEverything,
 });
 
@@ -72,6 +85,7 @@ function updateSettings(patch) {
 function applySettings() {
   document.body.classList.toggle('reduced-effects', Boolean(settings.reducedEffects));
   snow.setEnabled(!settings.reducedEffects);
+  audio.update();
 }
 
 // ------------------------------------------------------------------ Bildschirme
@@ -92,6 +106,7 @@ function resetMood() {
   document.body.dataset.area = '';
   document.body.dataset.urgent = 'false';
   snow.setMode(TITLE_ATMOSPHERE);
+  audio.setTitleAmbience();
 }
 
 function hasRunningGame() {
@@ -157,17 +172,25 @@ function continueGame() {
 }
 
 function handleEvents(events) {
+  let pickedUp = false;
   for (const event of events) {
-    if (event.type === 'ending' && (event.number === 1 || event.number === 2) && !reducedMotion()) {
-      flash.classList.remove('is-active');
-      void flash.offsetWidth; // Animation neu starten
-      flash.classList.add('is-active');
+    if (event.type === 'sfx') audio.play(event.id);
+    if (event.type === 'clock') audio.play('clock');
+    if (event.type === 'item' && event.delta > 0) pickedUp = true;
+    if (event.type === 'ending' && (event.number === 1 || event.number === 2)) {
+      audio.play('festgelaeut');
+      if (!reducedMotion()) {
+        flash.classList.remove('is-active');
+        void flash.offsetWidth; // Animation neu starten
+        flash.classList.add('is-active');
+      }
     }
     if (event.type === 'memory' && storage.unlockMemory(event.id)) {
       const memory = memories.find((m) => m.id === event.id);
       if (memory) showToast(`Erinnerung gefunden – Tür ${memory.door}: ${memory.title}`);
     }
   }
+  if (pickedUp) audio.play('pickup');
 }
 
 function choose(index) {
@@ -222,6 +245,10 @@ function showToast(message) {
 }
 
 // ------------------------------------------------------------------ Ereignisse
+// Browser erlauben Klang erst nach einer Nutzerinteraktion.
+document.addEventListener('pointerdown', () => audio.unlock());
+document.addEventListener('keydown', () => audio.unlock());
+
 document.addEventListener('click', (event) => {
   const action = event.target.closest('[data-action]')?.dataset.action;
   switch (action) {

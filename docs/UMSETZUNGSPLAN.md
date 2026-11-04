@@ -55,7 +55,8 @@ advent-ure/
 │   │   └── a11y.js           # Fokus-Management, Tastatursteuerung
 │   └── fx/
 │       ├── snow.js           # Schneefall-Canvas
-│       └── audio.js          # Ambient-Sound (optional)
+│       ├── audio.js          # Prozeduraler Klang (optional)
+│       └── atmosphere.js     # Stimmung je Station
 ├── data/
 │   ├── stations/
 │   │   ├── a-ankunft.js
@@ -81,7 +82,6 @@ advent-ure/
 │   └── storage.test.mjs
 ├── assets/
 │   ├── fonts/
-│   ├── audio/                # kurze, loopbare OGG/MP3, lizenzfrei
 │   └── img/                  # optional: Vignetten, Favicon
 └── docs/
     ├── STORY.md
@@ -272,10 +272,11 @@ Zusätzlich hängt der **Frost-Rand** an der Wärme: Je niedriger sie ist, desto
 
 ### 7.4 Sound (optional, standardmäßig aus)
 
-- Loops je Bereich: Wind (draußen), Kaminknistern (warm), Mühlrad-Knarzen, Kirchenhall.
-- Einzelsounds: Glockenschlag, Spieldose, Eisknacken, Tür.
-- Lautstärke-Crossfade beim Bereichswechsel über Web Audio `GainNode`.
-- Nur lizenzfreie Quellen (CC0), dokumentiert in `assets/audio/CREDITS.md`.
+Alle Klänge werden zur Laufzeit mit der Web Audio API erzeugt (`js/fx/audio.js`). Es gibt keine Audiodateien und damit auch keine Lizenzfragen und keinen Download.
+
+- **Ambient-Ebenen**, je nach Klima und Bereich weich übergeblendet: Wind (gefiltertes Rauschen mit wanderndem Bandpass und Böen), Kaminfeuer (tiefes Rauschen plus zufälliges Knistern), Kirchenhall (leiser Orgelgrundton).
+- **Einzelklänge:** Glockenschlag zur Viertelstunde, Silberglöckchen, Omas Spieldose (eigene Wiegenlied-Melodie), Eisknacken, ein leises Klingeln beim Aufsammeln, Festgeläut in den Enden 1 und 2.
+- Der AudioContext entsteht erst bei einer Nutzergeste (Autoplay-Regeln). Lautstärke über einen Master-Gain, Pause bei verstecktem Tab.
 
 ### 7.5 Barrierefreiheit
 
@@ -344,7 +345,7 @@ Ursprünglich war eine Breitensuche über den vollständigen Zustandsraum geplan
 | **M5** | Atmosphäre | Klima-Themes, Schneefall, Frost-Rand, Typewriter, Übergänge, Glockenschlag, Finale-Effekt | Subjektiv „weihnachtlich und stimmungsvoll“, 60 fps auf Mittelklasse-Smartphone |
 | **M6** | Menüs & Meta | Hauptmenü, Fortsetzen, Optionen, Erinnerungskalender mit 24 Türen | Erinnerungen bleiben nach Reload erhalten |
 | **M7** | Balancing | Simulator, Werte in `config.js` justieren, Hinweise in Texten nachschärfen | Bestes Ende mit ≥ 30 min Puffer auf dem Golden Path erreichbar, vollständige Erkundung in einem Lauf **nicht** möglich, kein Softlock |
-| **M8** | Sound (optional) | Audio-Loops, Einzelsounds, Crossfades, Credits | Sound standardmäßig aus, sauber stummschaltbar |
+| **M8** | Sound (optional) | Prozedurale Ambient-Ebenen und Einzelklänge, Crossfades, Lautstärke | Sound standardmäßig aus, sauber stummschaltbar |
 | **M9** | Feinschliff & Release | Barrierefreiheit, Responsiveness, Browser-Tests, Favicon, Meta-Tags, Deployment auf GitHub Pages | Lighthouse: Accessibility ≥ 95, Performance ≥ 90 |
 
 Empfohlene Reihenfolge: M0 → M1 → M2 → M3 → M4 → M5 → M6 → M7 → M9, mit M8 parallel oder zum Schluss. Der **vertikale Schnitt (M2)** ist bewusst früh angesetzt, um Schema und UI an echtem Content zu prüfen, bevor alle 45 Stationen geschrieben sind.

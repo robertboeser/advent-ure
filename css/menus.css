@@ -382,3 +382,12 @@ input[type="range"] {
 body:not([data-screen="game"]) .frost {
   opacity: 0;
 }
+
+.range {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.range input:disabled {
+  opacity: 0.4;
+}
