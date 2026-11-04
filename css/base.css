@@ -1,7 +1,32 @@
 /* ==========================================================================
-   Basis: Reset, Typografie, Layout
+   Basis: Schriften, Reset, Typografie, Layout
    Farben kommen als Custom Properties; theme.css überschreibt sie je Klima.
    ========================================================================== */
+
+/* Schriften lokal gebündelt (SIL Open Font License, siehe assets/fonts/) */
+@font-face {
+  font-family: "EB Garamond";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("../assets/fonts/eb-garamond-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "EB Garamond";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/eb-garamond-italic-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Cormorant SC";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/cormorant-sc-500-latin.woff2") format("woff2");
+}
 
 :root {
   --bg: #0a0f1f;

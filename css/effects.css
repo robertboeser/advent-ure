@@ -1,0 +1,206 @@
+/* ==========================================================================
+   Effekte: Schnee, Frost, Glühen, Übergänge, Typewriter
+   ========================================================================== */
+
+#snow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Frostrand: wächst, je kälter dir ist (--warmth 1 … 0). */
+.frost {
+  --frost: clamp(0, calc((0.75 - var(--warmth)) * 1.6), 1);
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: var(--frost);
+  background:
+    url("../assets/img/frost.svg") center / 100% 100% no-repeat,
+    radial-gradient(120% 95% at 50% 50%, transparent 58%, rgba(190, 225, 255, 0.16) 78%, rgba(225, 242, 255, 0.42) 100%);
+  -webkit-mask-image: radial-gradient(115% 90% at 50% 50%, transparent 52%, #000 92%);
+  mask-image: radial-gradient(115% 90% at 50% 50%, transparent 52%, #000 92%);
+  transition: opacity 1.5s ease;
+}
+
+body[data-screen="title"] .frost {
+  opacity: 0;
+}
+
+body[data-ending="1"] .frost,
+body[data-ending="2"] .frost {
+  opacity: 0;
+}
+
+body[data-ending="3"] .frost {
+  opacity: 1;
+}
+
+/* Lichtausbruch beim Entzünden der Sternlaterne */
+.flash {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 30%, #fffbe8 0%, #ffd98a 30%, rgba(255, 190, 90, 0.6) 55%, transparent 80%);
+}
+
+.flash.is-active {
+  animation: flash 2.4s ease-out forwards;
+}
+
+@keyframes flash {
+  0% { opacity: 0; transform: scale(0.6); }
+  15% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+/* Stationswechsel */
+.story {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.story.is-leaving {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+body[data-ending]:not([data-ending=""]) .story.is-leaving {
+  transition-duration: 0.9s;
+}
+
+.choices:not([hidden]) {
+  animation: rise 0.45s ease both;
+}
+
+.notes-top:not(:empty),
+.notes-bottom:not(:empty) {
+  animation: rise 0.4s ease both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Typewriter: noch nicht geschriebener Text hält bereits den Platz frei. */
+.tw-hidden {
+  visibility: hidden;
+}
+
+.station-text.is-typing {
+  cursor: pointer;
+}
+
+.typing-hint {
+  margin: -0.5rem 0 0;
+  height: 0;
+  overflow: visible;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.station-text.is-typing + .typing-hint {
+  opacity: 0.75;
+  transition: opacity 0.6s ease 1.2s;
+}
+
+/* Ruhiger Lesegrund hinter der Textspalte, damit Flocken nicht stören */
+.story {
+  position: relative;
+  isolation: isolate;
+}
+
+.story::before {
+  content: "";
+  position: absolute;
+  inset: 0 -1.5rem;
+  z-index: -1;
+  background: var(--sky-top);
+  opacity: 0.72;
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+/* Neuer Gegenstand in den Manteltaschen */
+.pocket-chip.is-new {
+  animation: pocket-pop 1.4s ease;
+}
+
+@keyframes pocket-pop {
+  0% { transform: scale(0.6); box-shadow: 0 0 0 rgba(255, 210, 120, 0); }
+  30% { transform: scale(1.15); box-shadow: 0 0 18px rgba(255, 210, 120, 0.8); border-color: var(--accent-strong); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(255, 210, 120, 0); }
+}
+
+/* Uhr ab 23:30 */
+body[data-urgent="true"] .status-clock {
+  animation: urgent 2s ease-in-out infinite;
+}
+
+@keyframes urgent {
+  50% { opacity: 0.55; }
+}
+
+/* Wärme kritisch */
+.status-warmth[data-level="critical"] .pip.on {
+  animation: shiver 0.9s ease-in-out infinite;
+}
+
+@keyframes shiver {
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+
+/* Titel: sanft schwebende Laterne */
+.title-lantern {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 2.6rem;
+  filter: drop-shadow(0 0 18px rgba(255, 200, 110, 0.65));
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes float {
+  50% { transform: translateY(-6px); }
+}
+
+/* ---------------------------------------------------------------- Weniger Bewegung */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body.reduced-effects *,
+body.reduced-effects *::before,
+body.reduced-effects *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+body.reduced-effects #snow {
+  display: none;
+}
+
+/* Auf Endbildschirmen zählen weder Uhr noch Wärme noch Taschen. */
+body[data-ending]:not([data-ending=""]) .status-clock,
+body[data-ending]:not([data-ending=""]) .status-warmth,
+body[data-ending]:not([data-ending=""]) .pockets {
+  visibility: hidden;
+}

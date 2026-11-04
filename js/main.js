@@ -3,10 +3,17 @@
 import { createEngine } from './engine/engine.js';
 import { createStorage } from './engine/storage.js';
 import { createRenderer } from './ui/renderer.js';
+import { createTypewriter } from './ui/typewriter.js';
+import { createSnow } from './fx/snow.js';
+import { atmosphereFor, TITLE_ATMOSPHERE } from './fx/atmosphere.js';
 import { gameData, memories } from '../data/index.js';
 
 const engine = createEngine(gameData);
 const storage = createStorage();
+let settings = storage.loadSettings();
+
+const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const reducedMotion = () => motionQuery.matches || settings.reducedEffects;
 
 const screens = {
   title: document.getElementById('screen-title'),
@@ -18,12 +25,29 @@ const toast = document.getElementById('toast');
 
 let state = null;
 
+const snow = createSnow(document.getElementById('snow'), { reducedMotion });
+const flash = document.getElementById('flash');
+
+const typewriter = createTypewriter({
+  getSpeed: () => settings.textSpeed,
+  reducedMotion,
+  srTarget: document.getElementById('station-text-sr'),
+});
+
 const renderer = createRenderer({
   engine,
   onChoose: choose,
   onUseItem: useItem,
   onRestart: () => startNewGame(),
+  onStation: (station) => snow.setMode(atmosphereFor(station)),
+  presentText: typewriter.present,
+  reducedMotion,
 });
+
+function applySettings() {
+  document.body.classList.toggle('reduced-effects', Boolean(settings.reducedEffects));
+  snow.setEnabled(!settings.reducedEffects);
+}
 
 // ------------------------------------------------------------------ Bildschirme
 function showScreen(name) {
@@ -32,6 +56,11 @@ function showScreen(name) {
 }
 
 function showTitle() {
+  typewriter.skip();
+  delete document.body.dataset.ending;
+  document.body.dataset.climate = 'kalt';
+  document.body.dataset.urgent = 'false';
+  snow.setMode(TITLE_ATMOSPHERE);
   const save = storage.loadGame(engine.isValidState);
   const continueBtn = screens.title.querySelector('[data-action="continue"]');
   continueBtn.hidden = !save || engine.isEnding(save);
@@ -40,6 +69,7 @@ function showTitle() {
 }
 
 function startNewGame() {
+  renderer.reset();
   state = engine.newGame();
   storage.saveGame(state);
   showScreen('game');
@@ -50,6 +80,7 @@ function continueGame() {
   const save = storage.loadGame(engine.isValidState);
   if (!save) return startNewGame();
   state = save;
+  renderer.reset();
   showScreen('game');
   renderer.render(state, [], { kind: 'enter', animate: false });
 }
@@ -57,6 +88,11 @@ function continueGame() {
 // ------------------------------------------------------------------ Spielzüge
 function handleEvents(events) {
   for (const event of events) {
+    if (event.type === 'ending' && (event.number === 1 || event.number === 2) && !reducedMotion()) {
+      flash.classList.remove('is-active');
+      void flash.offsetWidth; // Animation neu starten
+      flash.classList.add('is-active');
+    }
     if (event.type === 'memory' && storage.unlockMemory(event.id)) {
       const memory = memories.find((m) => m.id === event.id);
       if (memory) showToast(`Erinnerung gefunden – Tür ${memory.door}: ${memory.title}`);
@@ -65,6 +101,7 @@ function handleEvents(events) {
 }
 
 function choose(index) {
+  if (typewriter.active) return;
   const before = engine.station(state);
   const choice = before.choices[index];
   const result = engine.choose(state, index);
@@ -100,13 +137,19 @@ screens.title.addEventListener('click', (event) => {
   if (action === 'continue') continueGame();
 });
 
+// Text überspringen: Klick in den Text oder Leertaste/Enter
+document.getElementById('station-text').addEventListener('click', () => typewriter.skip());
+
 document.getElementById('btn-menu').addEventListener('click', () => menuDialog.showModal());
 document.getElementById('btn-inventory').addEventListener('click', () => renderer.openInventory());
 
 menuDialog.addEventListener('close', () => {
   const value = menuDialog.returnValue;
   menuDialog.returnValue = '';
-  if (value === 'title') showTitle();
+  if (value === 'title') motionQuery.addEventListener?.('change', () => snow.refresh());
+
+applySettings();
+showTitle();
   if (value === 'restart') startNewGame();
 });
 
@@ -116,6 +159,12 @@ document.addEventListener('keydown', (event) => {
   if (menuDialog.open || inventoryDialog.open) return;
   const tag = event.target?.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+  if (typewriter.active && (event.key === ' ' || event.key === 'Enter' || /^[1-9]$/.test(event.key))) {
+    event.preventDefault();
+    typewriter.skip();
+    return;
+  }
 
   if (/^[1-9]$/.test(event.key)) {
     const button = document.querySelector(`#choices button[data-number="${event.key}"]`);
@@ -136,4 +185,7 @@ if (!storage.persistent) {
   showToast('Dein Browser erlaubt keine Speicherung – der Spielstand geht beim Schließen verloren.');
 }
 
+motionQuery.addEventListener?.('change', () => snow.refresh());
+
+applySettings();
 showTitle();

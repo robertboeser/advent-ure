@@ -19,9 +19,19 @@ export function instantText(container, paragraphs) {
  * @param {() => void} [options.onMemories]
  * @param {(container: HTMLElement, paragraphs: string[], opts: object) => Promise<void>} [options.presentText]
  */
-export function createRenderer({ engine, onChoose, onUseItem, onRestart, onMemories, presentText = instantText }) {
+export function createRenderer({
+  engine,
+  onChoose,
+  onUseItem,
+  onRestart,
+  onMemories,
+  onStation = () => {},
+  presentText = instantText,
+  reducedMotion = () => false,
+}) {
   const $ = (id) => document.getElementById(id);
   const el = {
+    story: $('story'),
     title: $('station-title'),
     notesTop: $('notes-top'),
     text: $('station-text'),
@@ -39,6 +49,9 @@ export function createRenderer({ engine, onChoose, onUseItem, onRestart, onMemor
 
   let currentState = null;
   let renderToken = 0;
+  let previousItems = null;
+
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   // ---------------------------------------------------------------- Notizen
   function renderNotes(container, notes) {
@@ -86,12 +99,15 @@ export function createRenderer({ engine, onChoose, onUseItem, onRestart, onMemor
 
   function renderPockets(state) {
     const entries = inventoryEntries(state);
+    const before = previousItems;
+    previousItems = { ...state.items };
     el.pockets.replaceChildren(
       ...entries.map(({ id, count, item }) => {
         const li = document.createElement('li');
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'pocket-chip';
+        if (before && count > (before[id] ?? 0)) btn.classList.add('is-new');
         btn.dataset.item = id;
         btn.title = item.name;
         btn.innerHTML = `<span aria-hidden="true">${item.icon ?? '•'}</span><span class="pocket-name">${formatInline(item.name)}</span>${count > 1 ? `<span class="pocket-count">×${count}</span>` : ''}`;
@@ -195,6 +211,16 @@ export function createRenderer({ engine, onChoose, onUseItem, onRestart, onMemor
     const token = ++renderToken;
     currentState = state;
     const station = engine.station(state);
+
+    // Sanfter Übergang zwischen Stationen
+    if (kind === 'enter' && animate && el.title.textContent && !reducedMotion()) {
+      el.story.classList.add('is-leaving');
+      await wait(station.ending ? 900 : 300);
+      if (token !== renderToken) return;
+    }
+    el.story.classList.remove('is-leaving');
+
+    onStation(station, state);
     document.body.dataset.climate = station.climate;
     document.body.dataset.area = station.area ?? '';
     document.body.dataset.ending = station.ending ? String(station.ending.number) : '';
@@ -237,5 +263,20 @@ export function createRenderer({ engine, onChoose, onUseItem, onRestart, onMemor
     el.choices.querySelector('button.choice:not([aria-disabled])')?.focus({ preventScroll: true });
   }
 
-  return { render, openInventory, renderInventory: (state) => renderInventory(state), focusFirstChoice, get state() { return currentState; } };
+  /** Setzt die Erinnerung an den vorigen Inventarstand zurück (z. B. bei neuem Spiel). */
+  function reset() {
+    previousItems = null;
+    el.title.textContent = '';
+  }
+
+  return {
+    render,
+    reset,
+    openInventory,
+    renderInventory: (state) => renderInventory(state),
+    focusFirstChoice,
+    get state() {
+      return currentState;
+    },
+  };
 }

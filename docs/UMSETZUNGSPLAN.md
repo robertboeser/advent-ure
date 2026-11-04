@@ -108,7 +108,7 @@ Beschreibung der Felder. Die genaue Syntax wird in M1 festgelegt.
 | `text` | Liste von Absätzen | ja | Jeder Absatz ist entweder ein String oder ein Objekt `{ when: Bedingung, text }` |
 | `choices` | Liste von Wahlen | ja (leer bei Enden) | siehe 4.2 |
 | `ending` | Objekt | nur Enden | `{ number, title, memory }` |
-| `sound` | string | optional | Ambient-Loop überschreiben (sonst aus Bereich/Klima abgeleitet) |
+| `fx` | Objekt | optional | Stimmung überschreiben: `{ snow: 'none'|'window'|'light'|'normal'|'heavy'|'storm', golden, wind }` (sonst aus dem Klima abgeleitet) |
 | `onEnter` | Effekte | optional | Effekte, die beim Betreten ausgeführt werden (z. B. Erinnerung freischalten) |
 
 ### 4.2 Wahl (Schema)

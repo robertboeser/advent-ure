@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Farbstimmungen je Klima und Ende
+   Die Himmelsfarben sind als @property registriert und blenden weich über.
+   ========================================================================== */
+
+@property --sky-top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0a0f1f;
+}
+
+@property --sky-bottom {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #141c36;
+}
+
+@property --glow-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 170, 80, 0);
+}
+
+body {
+  --sky-top: #0a0f1f;
+  --sky-bottom: #141c36;
+  --glow-color: rgba(255, 170, 80, 0);
+  background: var(--sky-top);
+  transition: --sky-top 1.2s ease, --sky-bottom 1.2s ease, --glow-color 1.2s ease, background-color 1.2s ease;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 70% at 50% 110%, var(--glow-color), transparent 70%),
+    linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+}
+
+/* Titelbildschirm: Sternennacht über dem Tal */
+body[data-screen="title"] {
+  --sky-top: #070b18;
+  --sky-bottom: #1a2246;
+  --glow-color: rgba(232, 198, 106, 0.12);
+}
+
+/* ---------------------------------------------------------------- Klima */
+
+body[data-climate="warm"] {
+  --sky-top: #1b0f0a;
+  --sky-bottom: #2d170c;
+  --glow-color: rgba(255, 150, 60, 0.32);
+  --bg: #1b0f0a;
+  --bg-elev: rgba(48, 26, 14, 0.85);
+  --bg-elev-solid: #2a170d;
+  --text: #f4e6d0;
+  --text-muted: #c4a98a;
+  --accent: #f2b45c;
+  --accent-strong: #ffd38a;
+  --line: rgba(242, 180, 92, 0.25);
+}
+
+body[data-climate="mild"] {
+  --sky-top: #14110e;
+  --sky-bottom: #221a13;
+  --glow-color: rgba(255, 170, 90, 0.12);
+  --bg: #14110e;
+  --bg-elev: rgba(36, 28, 21, 0.85);
+  --bg-elev-solid: #241c15;
+  --text: #ede3d2;
+  --text-muted: #b5a690;
+  --accent: #e2bb6e;
+  --accent-strong: #f6d48f;
+  --line: rgba(226, 187, 110, 0.22);
+}
+
+body[data-climate="kalt"] {
+  --sky-top: #0a0f1f;
+  --sky-bottom: #141c36;
+  --glow-color: rgba(120, 150, 255, 0.06);
+}
+
+body[data-climate="eisig"] {
+  --sky-top: #0b1428;
+  --sky-bottom: #1d2547;
+  --glow-color: rgba(170, 210, 255, 0.12);
+  --bg: #0b1428;
+  --bg-elev: rgba(20, 32, 60, 0.82);
+  --bg-elev-solid: #15203d;
+  --text: #e7eefb;
+  --text-muted: #a6b4d0;
+  --accent: #bcd8ff;
+  --accent-strong: #e2efff;
+  --line: rgba(188, 216, 255, 0.24);
+}
+
+/* Kirche: ein Hauch Rot vom Ewigen Licht */
+body[data-area="kirche"][data-climate="mild"] {
+  --glow-color: rgba(220, 70, 60, 0.14);
+}
+
+/* ---------------------------------------------------------------- Enden */
+
+body[data-ending="1"],
+body[data-ending="2"] {
+  --sky-top: #1c1408;
+  --sky-bottom: #3a2a10;
+  --glow-color: rgba(255, 210, 120, 0.4);
+  --accent: #ffd27a;
+  --accent-strong: #ffe7b0;
+}
+
+body[data-ending="3"] {
+  --sky-top: #05070d;
+  --sky-bottom: #10162a;
+  --glow-color: rgba(150, 190, 255, 0.05);
+}
+
+body[data-ending="4"],
+body[data-ending="5"] {
+  --sky-top: #12151f;
+  --sky-bottom: #262b3b;
+  --glow-color: rgba(200, 200, 220, 0.08);
+}
+
+body[data-ending="7"] {
+  --sky-top: #0a1024;
+  --sky-bottom: #24305c;
+  --glow-color: rgba(200, 220, 255, 0.18);
+}
+
+/* ---------------------------------------------------------------- Dringlichkeit */
+
+body[data-urgent="true"] .status-clock {
+  color: var(--danger);
+}

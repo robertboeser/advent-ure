@@ -35,6 +35,7 @@ const EPILOG = [
 export const stations = [
   {
     id: 'ende_heilige_nacht',
+    fx: { snow: 'normal', golden: true },
     title: 'Die Heilige Nacht',
     area: 'ende',
     climate: 'warm',
@@ -53,6 +54,7 @@ export const stations = [
 
   {
     id: 'ende_laterne',
+    fx: { snow: 'none' },
     title: 'Die Laterne brennt',
     area: 'ende',
     climate: 'warm',
@@ -71,6 +73,7 @@ export const stations = [
 
   {
     id: 'ende_ewiger_winter',
+    fx: { snow: 'storm', wind: 25 },
     title: 'Der ewige Winter',
     area: 'ende',
     climate: 'eisig',
@@ -88,6 +91,7 @@ export const stations = [
 
   {
     id: 'ende_zu_spaet',
+    fx: { snow: 'light' },
     title: 'Zu spät',
     area: 'ende',
     climate: 'kalt',
@@ -108,6 +112,7 @@ export const stations = [
 
   {
     id: 'ende_schneeschlaf',
+    fx: { snow: 'light' },
     title: 'Schneeschlaf',
     area: 'ende',
     climate: 'kalt',
@@ -135,6 +140,7 @@ export const stations = [
 
   {
     id: 'ende_heimweg',
+    fx: { snow: 'light', wind: -30 },
     title: 'Heimweg',
     area: 'ende',
     climate: 'warm',
@@ -150,6 +156,7 @@ export const stations = [
 
   {
     id: 'ende_schneeweber',
+    fx: { snow: 'normal' },
     title: 'Der neue Weber',
     area: 'ende',
     climate: 'eisig',
