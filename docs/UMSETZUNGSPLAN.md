@@ -108,6 +108,7 @@ Beschreibung der Felder. Die genaue Syntax wird in M1 festgelegt.
 | `text` | Liste von Absätzen | ja | Jeder Absatz ist entweder ein String oder ein Objekt `{ when: Bedingung, text }` |
 | `choices` | Liste von Wahlen | ja (leer bei Enden) | siehe 4.2 |
 | `ending` | Objekt | nur Enden | `{ number, title, memory }` |
+| `sound` | string | optional | Ambient-Loop überschreiben (sonst aus Bereich/Klima abgeleitet) |
 | `onEnter` | Effekte | optional | Effekte, die beim Betreten ausgeführt werden (z. B. Erinnerung freischalten) |
 
 ### 4.2 Wahl (Schema)
@@ -118,10 +119,13 @@ Beschreibung der Felder. Die genaue Syntax wird in M1 festgelegt.
 | `to` | string | Ziel-ID. Fehlt es, ist die Wahl eine Aktion ↺. |
 | `minutes` | number | Zeitkosten, Standard 0 |
 | `if` | Bedingung | Optional. Wenn nicht erfüllt, wird die Wahl ausgeblendet. |
-| `showLocked` | boolean | Ausgegraut anzeigen statt ausblenden, mit einem Hinweis (z. B. „Dafür brauchst du Streichhölzer“) |
+| `showLocked` | boolean | Ausgegraut anzeigen statt ausblenden |
+| `hint` | string | Hinweis zu einer ausgegrauten Wahl (z. B. „Dafür brauchst du Streichhölzer.“) |
 | `once` | boolean | Standard ist `true` bei Aktionen, `false` bei Wegen. Die Engine merkt sich benutzte Aktionen automatisch im Zustand (`used`). |
 | `effects` | Effekte | siehe 4.4 |
 | `response` | string | Optionaler Text, der nach einer Aktion als kurze Rückmeldung erscheint (z. B. „Der Tee schmeckt nach Thymian und Honig.“) |
+| `sfx` | string | Optionaler Soundeffekt (z. B. `spieldose`, `eis`) |
+| `id` | string | Optional. Stabiler Schlüssel für einmalige Aktionen, Standard ist das Label. |
 
 ### 4.3 Bedingungen
 
@@ -138,8 +142,14 @@ Bedingungen sind deklarative Objekte und kein ausführbarer Code. Damit sind sie
 | `any: [ … ]` | ODER |
 | `not: { … }` | Negation |
 | `ref: "kennt_legende"` | Benannte, wiederverwendbare Bedingung aus `config.js` |
+| `first: true` | Erster Besuch der aktuellen Station (Aktionen zählen nicht als Besuch) |
+| `visited: "stube"` | Station wurde schon besucht |
 
-### 4.4 Effekte
+### 4.4 Gegenstände
+
+`data/items.js` bildet IDs auf `{ name, icon, description, use? }` ab. `use` ist `{ label, effects, response }` und erscheint als Knopf im Inventar (z. B. „Essen“).
+
+### 4.5 Effekte
 
 | Effekt | Bedeutung |
 |---|---|
@@ -150,7 +160,7 @@ Bedingungen sind deklarative Objekte und kein ausführbarer Code. Damit sind sie
 | `attr: { waerme: +2, guete: -1 }` | Attribute ändern, mit Clamping laut `config.js` |
 | `memory: "id"` | Erinnerung im Meta-Kalender freischalten |
 
-### 4.5 Spielzustand
+### 4.6 Spielzustand
 
 ```
 {
@@ -160,6 +170,7 @@ Bedingungen sind deklarative Objekte und kein ausführbarer Code. Damit sind sie
   items:  { laterne: 1, lebkuchen: 2, ... },
   flags:  { brief_gelesen: true, ... },
   used:   { "kueche#lebkuchen": true, ... },   // benutzte einmalige Aktionen
+  visits: { bahnhof: 1, stube: 2, ... },        // Besuchszähler (für `first`/`visited`)
   log:    [ "bahnhof", "waerterhaus", ... ],   // besuchte Stationen (für Statistik/Epilog)
   startedAt: "2026-12-24T21:00:00.000Z"
 }
