@@ -1,0 +1,384 @@
+/* ==========================================================================
+   Menüs: Seiten, Erinnerungskalender, Optionen
+   ========================================================================== */
+
+.btn-quiet {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn-danger {
+  border-color: rgba(255, 138, 138, 0.45);
+  color: var(--danger);
+}
+
+.btn-danger:hover {
+  border-color: var(--danger);
+  background: rgba(255, 138, 138, 0.1);
+}
+
+.memory-count {
+  color: var(--text-muted);
+  font-size: 0.8em;
+}
+
+/* ---------------------------------------------------------------- Seiten */
+
+.screen-page {
+  padding: 1.5rem var(--gutter) 3rem;
+}
+
+.page {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.page.prose {
+  max-width: var(--measure);
+}
+
+.page-header {
+  margin-bottom: 1.75rem;
+}
+
+.page-title {
+  margin: 1.25rem 0 0.75rem;
+  color: var(--accent-strong);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 1.5rem + 2vw, 2.8rem);
+}
+
+.page-lead {
+  max-width: 38rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.prose h2 {
+  margin: 2rem 0 0.6rem;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.4rem;
+}
+
+.prose ul {
+  padding-left: 1.2rem;
+}
+
+.prose li {
+  margin-bottom: 0.4rem;
+}
+
+.keys {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+}
+
+.keys dt {
+  text-align: right;
+}
+
+.keys dd {
+  margin: 0;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 0.4em;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font-family: var(--font-display);
+  font-size: 0.9em;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- Kalender */
+
+.memories-progress {
+  color: var(--accent);
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-flow: dense;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid rgba(232, 198, 106, 0.3);
+  border-radius: 14px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0 2px, transparent 2px 46px),
+    linear-gradient(160deg, #4a2615, #2c160c 60%, #3a1d10);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.55), 0 18px 40px rgba(0, 0, 0, 0.45);
+  list-style: none;
+}
+
+.calendar li {
+  display: flex;
+}
+
+.calendar li.is-big {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.door {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  padding: 0.4rem;
+  border: 1px solid rgba(255, 220, 160, 0.25);
+  border-radius: 8px;
+  background: linear-gradient(170deg, #8b3a26, #5c2016);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -3px 8px rgba(0, 0, 0, 0.35);
+  color: #ffe7b0;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.calendar li.is-wide {
+  grid-column: span 2;
+}
+
+.calendar li.is-big .door,
+.calendar li.is-wide .door {
+  aspect-ratio: auto;
+  height: 100%;
+}
+
+.calendar li:nth-child(3n) .door:not(.is-open) {
+  background: linear-gradient(170deg, #2f5a3a, #1c3b25);
+}
+
+.calendar li:nth-child(4n) .door:not(.is-open) {
+  background: linear-gradient(170deg, #26406b, #172848);
+}
+
+.door:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 6px 14px rgba(0, 0, 0, 0.45);
+}
+
+.door-number {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 1rem + 1.2vw, 1.9rem);
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.calendar li.is-big .door-number {
+  font-size: clamp(2.2rem, 1.6rem + 2vw, 3.4rem);
+}
+
+/* Türknauf */
+.door:not(.is-open)::after {
+  content: "";
+  position: absolute;
+  right: 12%;
+  top: 52%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e8c66a;
+  box-shadow: 0 0 4px rgba(232, 198, 106, 0.8);
+}
+
+.door.is-open {
+  border-color: rgba(255, 220, 160, 0.55);
+  background: radial-gradient(circle at 50% 35%, rgba(255, 214, 140, 0.32), rgba(20, 12, 6, 0.95) 70%);
+  box-shadow: inset 0 0 18px rgba(255, 190, 90, 0.25);
+}
+
+.door.is-ending.is-open {
+  border-color: #ffd27a;
+  box-shadow: inset 0 0 22px rgba(255, 210, 120, 0.45), 0 0 12px rgba(255, 210, 120, 0.25);
+}
+
+.door-icon {
+  font-size: clamp(1.3rem, 1rem + 1vw, 1.8rem);
+  line-height: 1.1;
+}
+
+.calendar li.is-big .door-icon {
+  font-size: clamp(2.4rem, 1.8rem + 2vw, 3.6rem);
+}
+
+.door-title {
+  color: #f5e6c8;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.door.is-open .door-number {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.45rem;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.door[aria-pressed="true"] {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.calendar-detail {
+  min-height: 5.5rem;
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-left: 2px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.calendar-detail:empty {
+  display: none;
+}
+
+.calendar-detail h2 {
+  margin: 0 0 0.35rem;
+  color: var(--accent-strong);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+}
+
+.calendar-detail p {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .calendar li.is-wide {
+    grid-column: auto;
+  }
+
+  .door,
+  .calendar li.is-wide .door {
+    aspect-ratio: 1;
+    height: auto;
+  }
+
+  .calendar {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0.6rem;
+    gap: 0.45rem;
+  }
+
+  .door-title {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- Optionen */
+
+.options {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 36rem;
+}
+
+.option-group {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 1rem 1.25rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.option-group legend {
+  padding: 0 0.4rem;
+  color: var(--accent);
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.segmented label {
+  position: relative;
+}
+
+.segmented input {
+  position: absolute;
+  opacity: 0;
+}
+
+.segmented span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.2rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.segmented input:checked + span {
+  border-color: var(--accent);
+  background: rgba(232, 198, 106, 0.16);
+  color: var(--accent-strong);
+}
+
+.segmented input:focus-visible + span {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  cursor: pointer;
+}
+
+.toggle input {
+  flex: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-top: 0.3rem;
+  accent-color: var(--accent);
+}
+
+.toggle small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85em;
+}
+
+.option-group .btn {
+  justify-self: start;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.page-title:focus {
+  outline: none;
+}
+
+/* Frost gibt es nur im Spiel. */
+body:not([data-screen="game"]) .frost {
+  opacity: 0;
+}

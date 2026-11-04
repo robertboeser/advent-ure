@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/effects.css">
+  <link rel="stylesheet" href="css/menus.css">
 </head>
 <body data-screen="title" data-climate="kalt">
   <div class="backdrop" aria-hidden="true"></div>
@@ -31,7 +32,91 @@
       <nav class="title-menu" aria-label="Hauptmenü">
         <button type="button" class="btn btn-primary" data-action="continue" hidden>Fortsetzen</button>
         <button type="button" class="btn" data-action="new">Neues Spiel</button>
+        <button type="button" class="btn" data-action="memories">Erinnerungskalender <span class="memory-count" data-memory-count></span></button>
+        <button type="button" class="btn" data-action="options">Optionen</button>
+        <button type="button" class="btn btn-quiet" data-action="about">Über das Spiel</button>
       </nav>
+      <p class="title-footer muted" id="storage-warning" hidden>Dein Browser erlaubt keine Speicherung – Spielstand und Erinnerungen gehen beim Schließen verloren.</p>
+    </div>
+  </section>
+
+  <!-- Erinnerungskalender -->
+  <section id="screen-memories" class="screen screen-page" hidden aria-labelledby="memories-heading">
+    <div class="page">
+      <header class="page-header">
+        <button type="button" class="btn btn-small" data-action="back">← Zurück</button>
+        <h1 id="memories-heading" class="page-title">Erinnerungskalender</h1>
+        <p class="page-lead">Jede Tür öffnet sich, wenn du einen besonderen Moment erlebt hast – über alle Durchgänge hinweg. Die vierundzwanzigste Tür gehört der Heiligen Nacht.</p>
+        <p class="memories-progress" id="memories-progress"></p>
+      </header>
+      <ol class="calendar" id="calendar" aria-label="24 Türen"></ol>
+      <div class="calendar-detail" id="calendar-detail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Optionen -->
+  <section id="screen-options" class="screen screen-page" hidden aria-labelledby="options-heading">
+    <div class="page">
+      <header class="page-header">
+        <button type="button" class="btn btn-small" data-action="back">← Zurück</button>
+        <h1 id="options-heading" class="page-title">Optionen</h1>
+      </header>
+      <form class="options" id="options-form">
+        <fieldset class="option-group">
+          <legend>Textgeschwindigkeit</legend>
+          <div class="segmented">
+            <label><input type="radio" name="textSpeed" value="langsam"><span>Langsam</span></label>
+            <label><input type="radio" name="textSpeed" value="normal"><span>Normal</span></label>
+            <label><input type="radio" name="textSpeed" value="schnell"><span>Schnell</span></label>
+            <label><input type="radio" name="textSpeed" value="sofort"><span>Sofort</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="option-group">
+          <legend>Darstellung</legend>
+          <label class="toggle">
+            <input type="checkbox" name="reducedEffects">
+            <span>Reduzierte Effekte <small>kein Schneefall, keine Animationen</small></span>
+          </label>
+        </fieldset>
+        <fieldset class="option-group">
+          <legend>Speichern</legend>
+          <label class="toggle">
+            <input type="checkbox" name="sessionOnly">
+            <span>Spielstand nur für diese Sitzung <small>wird beim Schließen des Tabs vergessen; Erinnerungen bleiben</small></span>
+          </label>
+          <button type="button" class="btn btn-danger" data-action="reset">Alles zurücksetzen …</button>
+        </fieldset>
+      </form>
+    </div>
+  </section>
+
+  <!-- Über -->
+  <section id="screen-about" class="screen screen-page" hidden aria-labelledby="about-heading">
+    <div class="page prose">
+      <header class="page-header">
+        <button type="button" class="btn btn-small" data-action="back">← Zurück</button>
+        <h1 id="about-heading" class="page-title">Über das Spiel</h1>
+      </header>
+      <p><em>Die vierundzwanzigste Tür</em> ist ein weihnachtliches Textadventure. Du hast drei Stunden bis Mitternacht, um Oma zu finden und die Sternlaterne über Tannbrück zu entzünden.</p>
+      <h2>So wird gespielt</h2>
+      <ul>
+        <li>Lies den Text und wähle, was du tust. Manche Wahlen kosten Zeit – die Minuten stehen daneben.</li>
+        <li>Draußen frierst du. Behalte deine <strong>Wärme</strong> im Blick und wärme dich, wo du kannst.</li>
+        <li>In deinen <strong>Manteltaschen</strong> sammelst du Gegenstände. Manche kann man essen, manche verschenken.</li>
+        <li>Nicht alles lässt sich in einer Nacht schaffen. Es gibt sieben Enden und vierundzwanzig Erinnerungen.</li>
+      </ul>
+      <h2>Tastatur</h2>
+      <dl class="keys">
+        <dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Wahl treffen</dd>
+        <dt><kbd>Leertaste</kbd></dt><dd>Text sofort ganz anzeigen</dd>
+        <dt><kbd>I</kbd></dt><dd>Manteltaschen</dd>
+        <dt><kbd>M</kbd></dt><dd>Menü</dd>
+        <dt><kbd>Esc</kbd></dt><dd>Dialog schließen</dd>
+      </dl>
+      <h2>Speicherung</h2>
+      <p>Das Spiel läuft vollständig in deinem Browser. Spielstand, Erinnerungen und Einstellungen liegen im lokalen Speicher deines Browsers und werden nirgendwohin gesendet.</p>
+      <h2>Schriften</h2>
+      <p>EB Garamond und Cormorant SC, beide unter der SIL Open Font License.</p>
     </div>
   </section>
 
@@ -86,8 +171,22 @@
       <h2 id="menu-heading">Pause</h2>
       <div class="menu-list">
         <button type="submit" class="btn btn-primary" value="resume">Weiterspielen</button>
+        <button type="submit" class="btn" value="memories">Erinnerungskalender</button>
+        <button type="submit" class="btn" value="options">Optionen</button>
         <button type="submit" class="btn" value="title">Zum Titelbildschirm</button>
-        <button type="submit" class="btn" value="restart">Neu beginnen</button>
+        <button type="submit" class="btn" value="restart">Neu beginnen …</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Bestätigung -->
+  <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-heading">
+    <form method="dialog" class="dialog-inner">
+      <h2 id="confirm-heading">Sicher?</h2>
+      <p id="confirm-text"></p>
+      <div class="dialog-actions">
+        <button type="submit" class="btn" value="cancel">Abbrechen</button>
+        <button type="submit" class="btn btn-primary" value="ok" id="confirm-ok">Ja</button>
       </div>
     </form>
   </dialog>
