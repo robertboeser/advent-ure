@@ -120,6 +120,7 @@ Beschreibung der Felder. Die genaue Syntax wird in M1 festgelegt.
 | `minutes` | number | Zeitkosten, Standard 0 |
 | `if` | Bedingung | Optional. Wenn nicht erfüllt, wird die Wahl ausgeblendet. |
 | `showLocked` | boolean | Ausgegraut anzeigen statt ausblenden |
+| `showIf` | Bedingung | Optional. Wenn nicht erfüllt, wird die Wahl immer ausgeblendet, auch bei `showLocked`. So erscheint ein gesperrter Hinweis nur in passenden Situationen. |
 | `hint` | string | Hinweis zu einer ausgegrauten Wahl (z. B. „Dafür brauchst du Streichhölzer.“) |
 | `once` | boolean | Standard ist `true` bei Aktionen, `false` bei Wegen. Die Engine merkt sich benutzte Aktionen automatisch im Zustand (`used`). |
 | `effects` | Effekte | siehe 4.4 |

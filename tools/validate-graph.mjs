@@ -118,6 +118,7 @@ export function validate({ stations, items, config }, memories = []) {
       if (c.showLocked && !c.if) warn(`${where}: showLocked ohne Bedingung`);
       if (c.showLocked && !c.hint) warn(`${where}: showLocked ohne hint`);
       checkCondition(c.if, where);
+      checkCondition(c.showIf, `${where} (showIf)`);
       checkEffects(c.effects, where);
     }
 

@@ -36,6 +36,7 @@ export function createEngine({ stations, items, config }, { keepLog = true } = {
 
   function isAvailable(state, station, choice) {
     if (isOnce(station, choice) && state.used[choiceKey(station, choice)]) return false;
+    if (choice.showIf && !test(choice.showIf, state)) return false;
     return test(choice.if, state);
   }
 
@@ -58,6 +59,7 @@ export function createEngine({ stations, items, config }, { keepLog = true } = {
     station.choices.forEach((choice, index) => {
       const used = isOnce(station, choice) && state.used[choiceKey(station, choice)];
       if (used) return;
+      if (choice.showIf && !test(choice.showIf, state)) return;
       const ok = test(choice.if, state);
       if (!ok && !choice.showLocked) return;
       result.push({

@@ -47,6 +47,14 @@ export const stations = [
       { label: 'Versteckt', to: 'draussen', if: { flag: 'nie' } },
       { label: 'Gut sein', effects: { attr: { guete: 2 } } },
       { label: 'Nur für Gute', to: 'gut', if: { ref: 'warmherzig' } },
+      {
+        id: 'platzhalter',
+        label: 'Gesperrt',
+        showIf: { hasNot: 'schal' },
+        if: { has: 'schal' },
+        showLocked: true,
+        hint: 'Erst mit Schal.',
+      },
     ],
   },
   {

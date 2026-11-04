@@ -9,6 +9,7 @@ Das Spiel läuft komplett im Browser, ohne Backend. Der Spielstand liegt im Loca
 
 - [Story](docs/STORY.md): Welt, Figuren, Handlung, Enden, Stilrichtlinien
 - [Stationsgraph](docs/STATIONSGRAPH.md): alle Stationen, Wahlen, Bedingungen, Gegenstände und Regeln
+- [Stationsgraph (generiert)](docs/STATIONSGRAPH-GENERIERT.md): Diagramm aus den tatsächlichen Spieldaten
 - [Umsetzungsplan](docs/UMSETZUNGSPLAN.md): Architektur, Datenmodell, Speicherung, UI, Meilensteine
 
 ## Lokal starten

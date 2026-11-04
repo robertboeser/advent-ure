@@ -36,6 +36,15 @@ test('choices blendet aus, sperrt sichtbar und markiert Aktionen', () => {
   assert.equal(list.find((c) => c.label === 'Nach draußen').action, false);
 });
 
+test('showIf blendet Wahlen komplett aus', () => {
+  let s = engine.newGame();
+  assert.ok(engine.choices(s).some((c) => c.hint === 'Erst mit Schal.' && c.locked));
+  ({ state: s } = play(s, 'Schal nehmen'));
+  assert.ok(!engine.choices(s).some((c) => c.hint === 'Erst mit Schal.'));
+  const index = engine.station(s).choices.findIndex((c) => c.id === 'platzhalter');
+  assert.throws(() => engine.choose(s, index), /nicht verfügbar/);
+});
+
 test('einmalige Aktionen verschwinden, wiederholbare bleiben', () => {
   let s = engine.newGame();
   const { state, events } = play(s, 'Keks nehmen');

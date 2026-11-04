@@ -5,7 +5,7 @@ import { summarize, toMermaid } from '../tools/export-mermaid.mjs';
 import { gameData, memories } from '../data/index.js';
 import { data as fixture } from './fixtures.mjs';
 
-test('die echten Spieldaten sind fehlerfrei', { todo: 'Bereiche C–G folgen in M4' }, () => {
+test('die echten Spieldaten sind fehlerfrei', () => {
   const { errors } = validate(gameData, memories);
   assert.deepEqual(errors, []);
 });
